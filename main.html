@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lift System</title>
+    <title>LiftMove</title>
     <style>
         * {
             margin: 0;
@@ -422,7 +422,7 @@
                 </div>
 
                 <div class="control-panel">
-                    <h3>🎛️ Floor Selection</h3>
+                    <h3>Floor Selection</h3>
                     <div class="elevator-grid" id="floorButtons">
                         <!-- Floor buttons will be generated -->
                     </div>
@@ -460,14 +460,14 @@
                     </div>
                 </div>
 
-                <div class="building">
+                <!-- <div class="building">
                     <div style="text-align: center; color: white; margin-bottom: 20px;">
                         <h3>📊 Building Status</h3>
                     </div>
                     <div id="buildingInfo" style="color: white; font-size: 14px;">
-                        <!-- Building info will be populated -->
+                        Building info will be populated
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
 
@@ -475,13 +475,13 @@
             <div class="admin-controls">
                 <div class="admin-panel">
                     <h3>🚨 Emergency Controls</h3>
-                    <button class="control-btn emergency-btn" onclick="toggleEmergency()">
+                    <button class="control-btn emergency-btn" onclick="elevator.toggleEmergency()">
                         <span id="emergencyText">ACTIVATE EMERGENCY</span>
                     </button>
-                    <button class="control-btn maintenance-btn" onclick="toggleMaintenance()">
+                    <button class="control-btn maintenance-btn" onclick="elevator.toggleMaintenance()">
                         <span id="maintenanceText">ENTER MAINTENANCE</span>
                     </button>
-                    <button class="control-btn reset-btn" onclick="resetSystem()">RESET SYSTEM</button>
+                    <button class="control-btn reset-btn" onclick="elevator.resetSystem()">RESET SYSTEM</button>
                 </div>
 
                 <div class="admin-panel">
@@ -516,11 +516,12 @@
                     </div>
                     <div style="margin-bottom: 15px;">
                         <label for="floorsInput">Number of Floors:</label>
-                        <input type="number" id="floorsInput" min="5" max="20" value="10"
+                        <input type="number" id="floorsInput" min="5" max="20" value="6"
                             oninput="updateFloorsPreview(this.value)">
                     </div>
                     <div style="margin-bottom: 15px;">
-                        <div id="configPreview" style="background: #f8f9fa; padding: 10px; border-radius: 5px; font-size: 12px; color: #666; display: none;">
+                        <div id="configPreview"
+                            style="background: #f8f9fa; padding: 10px; border-radius: 5px; font-size: 12px; color: #666; display: none;">
                             Changes pending - click Apply to confirm
                         </div>
                     </div>
@@ -549,7 +550,7 @@
                 this.isMoving = false;
                 this.direction = 'stopped';
                 this.queue = [];
-                this.floors = 10;
+                this.floors = 6;
                 this.speed = 1000; // milliseconds per floor
                 this.isEmergency = false;
                 this.isMaintenance = false;
@@ -783,13 +784,16 @@
 
                 // Update building info
                 const buildingInfo = document.getElementById('buildingInfo');
-                buildingInfo.innerHTML = `
+                if (buildingInfo) {
+                    buildingInfo.innerHTML = `
                     <div style="margin-bottom: 10px;">🏢 Floors: ${this.floors}</div>
                     <div style="margin-bottom: 10px;">⚡ Speed: ${(2000 - this.speed) / 1000}x</div>
                     <div style="margin-bottom: 10px;">🎯 Active Requests: ${this.floorRequests.size}</div>
                     <div style="margin-bottom: 10px;">📊 Total Trips: ${this.stats.totalTrips}</div>
                     <div>🔋 Energy: ${this.stats.energyUsage.toFixed(1)} kW</div>
-                `;
+                    `;
+                }
+
 
                 // Update floor button states
                 const floorButtons = document.querySelectorAll('.floor-btn');
@@ -869,6 +873,7 @@
 
                 this.generateBuilding();
                 this.updateDisplay();
+                this.generateFloorButtons();
                 this.log('System reset completed');
             }
 
